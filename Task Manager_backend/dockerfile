@@ -1,0 +1,42 @@
+# ======================
+# Builder (common)
+# ======================
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+# Use npm ci for reproducible installs
+RUN npm ci
+
+# If native modules need build tools on alpine, uncomment:
+# RUN apk add --no-cache python3 make g++
+
+COPY . .
+RUN npm run build
+
+# ======================
+# Development
+# ======================
+FROM node:20-alpine AS development
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+RUN npm install -g nodemon ts-node
+COPY . .
+# Note: do NOT copy .env files into images; bind-mount or set env at runtime instead
+EXPOSE 3001
+CMD ["nodemon", "--watch", "src", "--exec", "ts-node", "src/main.ts"]
+
+# ======================
+# Production (final)
+# ======================
+FROM node:20-alpine AS production
+WORKDIR /app
+COPY package*.json ./
+# install only production deps reproducibly
+RUN npm ci --only=production
+# Copy compiled output from builder
+COPY --from=builder /app/dist ./dist
+# Avoid embedding any .env file in the image. Pass env at runtime.
+ENV NODE_ENV=production
+EXPOSE 3001
+CMD ["node", "dist/main.js"]

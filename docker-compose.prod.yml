@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
   postgres:
     image: postgres:15-alpine
@@ -9,6 +11,8 @@ services:
       POSTGRES_PASSWORD: 12357595
     volumes:
       - postgres_prod_data:/var/lib/postgresql/data
+    networks:
+      - taskmanager_network
 
   backend:
     container_name: backend_prod
@@ -16,24 +20,34 @@ services:
       context: ./task-manager-backend
       dockerfile: Dockerfile
       target: production
-    ports:
-      - "3001:3001"
+    restart: always
     env_file:
       - ./task-manager-backend/.env.prod
+    ports:
+      - "3001:3001"
     depends_on:
       - postgres
+    networks:
+      - taskmanager_network
 
   frontend:
     container_name: frontend_prod
     build:
       context: ./task-manager-frontend
       dockerfile: Dockerfile.prod
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:3001
+    restart: always
     ports:
       - "3000:3000"
-    env_file:
-      - ./task-manager-frontend/.env.prod.local
     depends_on:
       - backend
+    networks:
+      - taskmanager_network
 
 volumes:
   postgres_prod_data:
+
+networks:
+  taskmanager_network:
+    driver: bridge
