@@ -20,7 +20,7 @@ export class TaskService {
 
     const task = this.taskRepository.create({
       ...dto,
-      date: dto.date, // Pass the date as a string
+      date: dto.date, 
       user,
     });
     return this.taskRepository.save(task);
@@ -55,7 +55,7 @@ export class TaskService {
     const task = await this.findOne(id, user);
     Object.assign(task, {
       ...dto,
-      date: dto.date, // Ensure the date is passed as a string
+      date: dto.date, 
     });
     return this.taskRepository.save(task);
   }
@@ -73,7 +73,7 @@ export class TaskService {
 
   async toggleActiveStatus(id: number, user: User): Promise<Task> {
     const task = await this.findOne(id, user);
-    task.isActive = !task.isActive; // Toggle the isActive status
+    task.isActive = !task.isActive; 
     return this.taskRepository.save(task);
   }
 }

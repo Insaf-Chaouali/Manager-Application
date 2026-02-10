@@ -27,5 +27,5 @@ import {
   
     @IsNotEmpty()
     @IsDateString()
-    date: string; // Add the 'date' property to match the frontend payload
+    date: string; 
   }

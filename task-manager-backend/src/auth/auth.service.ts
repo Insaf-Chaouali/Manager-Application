@@ -15,7 +15,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  // ✅ SignUp retourne l'utilisateur créé
+  //  SignUp retourne l'utilisateur créé
   async signUp(signUpDto: SignUpDTO): Promise<User> {
     const { firstName, lastName, username, email, password, dateBirth } = signUpDto;
 

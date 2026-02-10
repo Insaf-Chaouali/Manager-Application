@@ -168,3 +168,39 @@ npm run test:e2e    # integration tests
 * The `@GetUser()` decorator ensures each user only sees their own tasks.
 * Docker Compose simplifies development and production setups without environment conflicts.
 
+
+## 🛡️ Implemented Security Measures
+
+### 1. HTTP Header Protection (Helmet)
+
+We use Helmet in the `main.ts` entry point to secure our HTTP headers. Helmet helps protect the app from some well-known web vulnerabilities by setting appropriate HTTP headers.
+* XSS Protection: Helps prevent cross-site scripting attacks.
+* HSTS: Ensures secure (HTTP over SSL/TLS) connections to the server.
+* MIME Type Sniffing Prevention: Prevents the browser from interpreting files as something else than declared.
+
+### 2. Rate Limiting (Throttler)
+To prevent Brute Force attacks and API spamming, we have integrated a Throttler system.
+
+* Global Configuration:
+    * TTL (Time To Live): 60000 milliseconds (1 minute).
+    * Limit: Maximum number of requests allowed within the TTL.
+* Error Handling: If a client exceeds the limit, the API automatically responds with a
+
+ {
+    "statusCode": 429,
+    "message": "ThrottlerException: Too Many Requests"
+}
+
+### 3. Rate Limit Exceptions
+
+* Route `POST /tasks` (Task Creation): Decorated with `@SkipThrottle()`. This bypasses the global rate limit to ensure users can create tasks without being blocked by temporary traffic spikes.
+
+
+
+
+
+
+
+
+
+

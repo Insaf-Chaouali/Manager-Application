@@ -49,8 +49,8 @@ export class Task {
   @Column({ type: 'timestamp', nullable: true })
   deadline?: Date;
 
-  @Column({ type: 'date' }) // Ensure the date column is of type 'date'
-  date: string; // Change the type to string to match the DTO and frontend
+  @Column({ type: 'date' }) 
+  date: string; 
 
   @ManyToOne(() => User, user => user.tasks, {
     onDelete: 'CASCADE',

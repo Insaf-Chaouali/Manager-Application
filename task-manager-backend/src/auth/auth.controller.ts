@@ -6,7 +6,6 @@ import { SignUpDTO, SignInDTO } from './DTO/auth-credentials.dto';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  // ✅ SignUp renvoie l'id de l'utilisateur pour les tests
   @Post('/signup')
   async signUp(@Body() signUpDto: SignUpDTO) {
     const user = await this.authService.signUp(signUpDto);

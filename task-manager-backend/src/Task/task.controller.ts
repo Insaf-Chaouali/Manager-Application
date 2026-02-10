@@ -16,12 +16,13 @@ import { CreateTaskDto } from './DTO/create-task.dto';
 import { UpdateTaskDto } from './DTO/update-task.dto';
 import { GetUser } from '../auth/get-user.decorators';
 import { User } from '../auth/entities/user.entity';
+import { SkipThrottle } from '@nestjs/throttler';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('tasks')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
-
+  @SkipThrottle()
   @Post()
   create(
     @Body() dto: CreateTaskDto,
@@ -43,7 +44,7 @@ export class TaskController {
     return this.taskService.findOne(id, user);
   }
 
-  @Put(':id') // Ensure this route is defined for updating tasks
+  @Put(':id') 
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateTaskDto,
