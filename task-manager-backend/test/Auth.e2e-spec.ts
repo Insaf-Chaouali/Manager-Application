@@ -3,6 +3,13 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { DataSource } from 'typeorm';
+import * as crypto from 'crypto';  // <-- corrige ici
+
+
+
+(global as any).crypto = crypto;  // <-- Ajouté
+
+
 
 jest.setTimeout(60000);
 
