@@ -7,20 +7,14 @@ on:
     branches: [ main ]
 
 jobs:
-
-  # -----------------------
-  # Backend
-  # -----------------------
   backend:
     runs-on: ubuntu-latest
-
-    # Service PostgreSQL ajouté ici
     services:
       postgres-db:
         image: postgres:15
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: 12357595
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
           POSTGRES_DB: task_manager_db
         ports:
           - 5432:5432
@@ -50,42 +44,33 @@ jobs:
         run: npm run test
 
       - name: Run integration tests (E2E)
-        # Injection des variables d'environnement pour NestJS
         env:
           DATABASE_HOST: localhost
           DATABASE_PORT: 5432
           DATABASE_USER: postgres
-          DATABASE_PASSWORD: 12357595
+          DATABASE_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DATABASE_NAME: task_manager_db
-          JWT_SECRET: 'topSecret51'
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
           NODE_ENV: test
         run: npm run test:e2e
 
       - name: Build backend
         run: npm run build
 
-  # -----------------------
-  # Frontend
-  # -----------------------
   frontend:
     runs-on: ubuntu-latest
-
     defaults:
       run:
         working-directory: task-manager-frontend
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 20
-
       - name: Install frontend dependencies
         run: npm install
-
       - name: Build frontend
         run: npm run build
         env:
